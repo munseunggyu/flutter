@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:style_practice/widgets/contentsComponent.dart';
 import 'package:style_practice/widgets/homeScreen.dart';
 
 void main() => runApp(const App());
@@ -17,9 +16,11 @@ class _AppState extends State<App> {
     return const MaterialApp(
       home: Scaffold(
         backgroundColor: Color(0xFF335CB0),
-        body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 32),
-          child: HomeScreen(),
+        body: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 32),
+            child: HomeScreen(),
+          ),
         ),
       ),
     );
