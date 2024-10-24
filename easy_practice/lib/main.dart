@@ -3,8 +3,18 @@ import 'package:flutter/material.dart';
 
 void main() {
   runApp(
-    const MaterialApp(
-      home: HomeScreen(),
+    MaterialApp(
+      theme: ThemeData(
+        fontFamily: 'sunflower',
+        textTheme: const TextTheme(
+          displayLarge: TextStyle(
+            color: Colors.white,
+            fontSize: 80,
+            fontFamily: 'parisienne',
+          ),
+        ),
+      ),
+      home: const HomeScreen(),
     ),
   );
 }
