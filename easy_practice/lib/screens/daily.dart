@@ -9,6 +9,8 @@ class Daily extends StatefulWidget {
 }
 
 class _DailyState extends State<Daily> {
+  DateTime selectedDate = DateTime.now();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -16,45 +18,19 @@ class _DailyState extends State<Daily> {
       child: SizedBox(
         width: MediaQuery.of(context).size.width, // 앱의 화면 너비
         child: Container(
-          color: Colors.pink[100],
-          child: const Column(
+          color: Colors.blue[100],
+          child: Column(
             children: [
-              _Top(),
-              _Bottom(),
+              _Top(selectedDate: selectedDate, datePicker: datePicker),
+              const _Bottom(),
             ],
           ),
         ),
       ),
     );
   }
-}
 
-class _Bottom extends StatelessWidget {
-  const _Bottom({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Image.asset('asset/img/middle_image.png'),
-    );
-  }
-}
-
-class _Top extends StatefulWidget {
-  const _Top({
-    super.key,
-  });
-
-  @override
-  State<_Top> createState() => _TopState();
-}
-
-class _TopState extends State<_Top> {
-  DateTime selectedDate = DateTime.now();
-
-  void datePicker(context) {
+  void datePicker() {
     showCupertinoDialog(
       context: context,
       builder: (BuildContext context) {
@@ -64,10 +40,15 @@ class _TopState extends State<_Top> {
             color: Colors.white,
             height: 300,
             child: CupertinoDatePicker(
+              initialDateTime: selectedDate,
               mode: CupertinoDatePickerMode.date,
+              maximumDate: DateTime.now(),
               onDateTimeChanged: (t) {
                 setState(() {
-                  selectedDate = t;
+                  DateTime nowDate = DateTime.now();
+                  if (!t.isAfter(nowDate)) {
+                    selectedDate = t;
+                  }
                 });
               },
               dateOrder: DatePickerDateOrder.ymd,
@@ -78,7 +59,35 @@ class _TopState extends State<_Top> {
       barrierDismissible: true,
     );
   }
+}
 
+class _Bottom extends StatelessWidget {
+  const _Bottom();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Expanded(
+      // child: Image.asset('asset/img/image_3.jpeg'),
+      child: Text(
+        'hi',
+        style: TextStyle(
+          color: Colors.blue,
+        ),
+      ),
+    );
+  }
+}
+
+class _Top extends StatefulWidget {
+  final DateTime selectedDate;
+  final VoidCallback? datePicker;
+  const _Top({required this.selectedDate, required this.datePicker});
+
+  @override
+  State<_Top> createState() => _TopState();
+}
+
+class _TopState extends State<_Top> {
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
@@ -91,7 +100,7 @@ class _TopState extends State<_Top> {
             style: Theme.of(context).textTheme.displayLarge,
           ),
           const Text(
-            '우리 처음 만난날',
+            'Daily',
             style: TextStyle(
               color: Colors.white,
               fontSize: 30,
@@ -99,7 +108,7 @@ class _TopState extends State<_Top> {
             ),
           ),
           Text(
-            '${selectedDate.year}.${selectedDate.month}.${selectedDate.day}',
+            '${widget.selectedDate.year}.${widget.selectedDate.month}.${widget.selectedDate.day}',
             style: const TextStyle(
               color: Colors.white,
               fontSize: 30,
@@ -107,17 +116,15 @@ class _TopState extends State<_Top> {
             ),
           ),
           IconButton(
-            onPressed: () {
-              datePicker(context);
-            },
+            onPressed: widget.datePicker,
             icon: const Icon(
-              Icons.favorite,
+              Icons.date_range,
             ),
             iconSize: 60,
-            color: Colors.red,
+            color: Colors.blue,
           ),
           Text(
-            'D + ${now.difference(selectedDate).inDays + 1}',
+            'D + ${now.difference(widget.selectedDate).inDays + 1}',
             style: const TextStyle(
               color: Colors.white,
               fontSize: 50,
