@@ -1,5 +1,7 @@
-import 'package:easy_practice/screens/daily.dart';
+// import 'package:easy_practice/screens/daily.dart';
 // import 'package:easy_practice/screens/timer_practice.dart';
+// import 'package:easy_practice/screens/timer_practice.dart';
+import 'package:easy_practice/screens/random_num.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -7,8 +9,11 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Daily(),
-    );
+    return const RandomNum();
+    // const Scaffold(
+    //   // body: TimerPractice(),
+    //   // body: Daily(),
+    //   body: RandomNum(),
+    // );
   }
 }
