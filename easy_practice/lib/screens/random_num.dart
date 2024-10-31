@@ -15,6 +15,7 @@ class RandomNum extends StatefulWidget {
 
 class _RandomNumState extends State<RandomNum> {
   List<int> numList = [123, 456, 789];
+  double maxNum = 0;
   void genRandomNum() {
     var rng = Random();
     for (int i = 0; i < 3; i++) {
@@ -25,14 +26,19 @@ class _RandomNumState extends State<RandomNum> {
     }
   }
 
-  void goSetting() {
-    Navigator.of(context).push(
+  void goSetting() async {
+    final result = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (BuildContext context) {
-          return const SettingScreen();
+          return SettingScreen(
+            maxNumber: maxNum,
+          );
         },
       ),
     );
+    setState(() {
+      maxNum = result;
+    });
   }
 
   @override

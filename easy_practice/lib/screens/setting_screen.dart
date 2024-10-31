@@ -2,9 +2,8 @@ import 'package:easy_practice/constant/color.dart';
 import 'package:flutter/material.dart';
 
 class SettingScreen extends StatefulWidget {
-  const SettingScreen({
-    super.key,
-  });
+  final double maxNumber;
+  const SettingScreen({super.key, required this.maxNumber});
 
   @override
   State<SettingScreen> createState() => _SettingScreenState();
@@ -12,8 +11,16 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen> {
   double maxNumber = 999.0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    maxNumber = widget.maxNumber;
+  }
+
   void goBack() {
-    Navigator.of(context).pop();
+    Navigator.of(context).pop(maxNumber);
   }
 
   void changeValue(double value) {
@@ -88,15 +95,10 @@ class _Number extends StatelessWidget {
   }
 }
 
-class _Button extends StatefulWidget {
+class _Button extends StatelessWidget {
   final VoidCallback goBack;
   const _Button({super.key, required this.goBack});
 
-  @override
-  State<_Button> createState() => _ButtonState();
-}
-
-class _ButtonState extends State<_Button> {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
@@ -104,7 +106,7 @@ class _ButtonState extends State<_Button> {
         backgroundColor: Colors.red,
         foregroundColor: Colors.white,
       ),
-      onPressed: widget.goBack,
+      onPressed: goBack,
       child: const Text('뒤로'),
     );
   }
