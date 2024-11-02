@@ -50,16 +50,54 @@ class ButtonsPracitce extends StatelessWidget {
               ),
               OutlinedButton(
                 onPressed: () {},
+                // Material State
+                // hovered, focused, pressed, disabled, dragged, selected, disabled, error
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(
+                    Colors.red,
+                  ),
+                ),
                 child: const Text(
                   'OutlinedButton',
                 ),
               ),
               TextButton(
                 onPressed: () {},
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.resolveWith((states) {
+                    if (states.contains(WidgetState.pressed)) {
+                      return Colors.red;
+                    }
+                    return Colors.grey;
+                  }),
+                ),
                 child: const Text(
                   'TextButton',
                 ),
               ),
+              OutlinedButton(
+                onPressed: () {},
+                style: OutlinedButton.styleFrom(
+                  // shape: const StadiumBorder(),
+                  // shape: RoundedRectangleBorder(
+                  //   borderRadius: BorderRadius.circular(
+                  //     8,
+                  //   ),
+                  // ),
+                  shape: const CircleBorder(
+                    eccentricity: 0,
+                  ),
+                ),
+                child: const Text(
+                  'OutlinedButton Shape',
+                ),
+              ),
+              ElevatedButton.icon(
+                  onPressed: () {},
+                  label: const Text('Icons with'),
+                  icon: const Icon(
+                    Icons.access_time,
+                  )),
             ],
           ),
         ),
