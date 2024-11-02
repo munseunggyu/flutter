@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:easy_practice/constant/color.dart';
-import 'package:easy_practice/screens/setting_screen.dart';
+import 'package:easy_practice/randomNumber/setting_screen.dart';
 import 'package:flutter/material.dart';
 
 class RandomNum extends StatefulWidget {

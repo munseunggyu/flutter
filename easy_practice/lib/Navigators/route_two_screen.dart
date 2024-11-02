@@ -1,5 +1,5 @@
 import 'package:easy_practice/layout/layout_practiec.dart';
-import 'package:easy_practice/screens/route_three_screen.dart';
+import 'package:easy_practice/Navigators/route_three_screen.dart';
 import 'package:flutter/material.dart';
 
 class RouteTwoScreen extends StatelessWidget {
