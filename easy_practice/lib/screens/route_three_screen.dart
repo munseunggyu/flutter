@@ -8,12 +8,18 @@ class RouteThreeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const LayoutPractiec(
+    final arg = ModalRoute.of(context)?.settings.arguments;
+    return LayoutPractiec(
       title: 'RouteThreeScreen',
       children: [
-        Text(
-          'Three',
-        ),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text(
+            'pop $arg',
+          ),
+        )
       ],
     );
   }
