@@ -1,73 +1,151 @@
 import 'package:flutter/material.dart';
-import 'package:todo/models/todo_item.dart';
-import 'package:todo/screens/body.dart';
-import 'package:todo/screens/footer.dart';
-import 'package:todo/screens/header.dart';
-
-// header 날짜 할일 갯수
-// body list 노출, check로 완료 표기, 삭제
-// footer input 영역 추가
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:todo/screens/add_task.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({
+    super.key,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int id = 0;
-  List<TodoItem> todoList = [];
-  String input = '';
+  List<String> todoList = [];
 
-  void changeInput(String value) {
+  void addTodo({required String todoText}) {
+    if (todoList.contains(todoText)) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('이미 존재함'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('close'),
+                ),
+              ],
+            );
+          });
+      return;
+    }
     setState(() {
-      input = value;
+      todoList.insert(0, todoText);
+      writeLocalData();
+      Navigator.pop(context);
     });
   }
 
-  void addTodoList() {
-    print('object');
+  void removeTodo(int index) {
     setState(() {
-      TodoItem newItem = TodoItem(id: id, txt: input, done: false);
-      todoList.add(newItem);
-      id += 1;
-      input = '';
+      todoList.removeAt(index);
+      writeLocalData();
+      if (Navigator.of(context).canPop()) {
+        Navigator.pop(context);
+      }
     });
   }
 
-  void todoDone(bool value, int id) {
+  void writeLocalData() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await prefs.setStringList('item', todoList);
+  }
+
+  void loadData() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final List<String> items = (prefs.getStringList('item') ?? []).toList();
+
     setState(() {
-      todoList = todoList.map((el) {
-        if (el.id == id) {
-          return TodoItem(id: el.id, txt: el.txt, done: value);
-        }
-        return el;
-      }).toList();
+      todoList = items;
     });
   }
 
   @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Header(todoList: todoList),
-          Footer(
-            input: input,
-            changeInput: changeInput,
-            addTodoList: addTodoList,
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-          Body(
-            todoList: todoList,
-            todoDone: todoDone,
+    return Scaffold(
+      drawer: const Drawer(
+        child: Text('data'),
+      ),
+      appBar: AppBar(
+        title: const Text('TODO App'),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (context) {
+                  return Padding(
+                    padding: MediaQuery.of(context).viewInsets,
+                    child: SizedBox(
+                      height: 250,
+                      child: AddTask(
+                        addTodo: addTodo,
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+            icon: const Icon(
+              Icons.add,
+            ),
           ),
         ],
+      ),
+      body: ListView.builder(
+        itemBuilder: (context, index) {
+          return Dismissible(
+            key: UniqueKey(),
+            direction: DismissDirection.startToEnd,
+            background: Container(
+              color: Colors.red,
+              child: const Row(
+                children: [
+                  Icon(
+                    Icons.check,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
+            ),
+            onDismissed: (direction) {
+              removeTodo(index);
+            },
+            child: ListTile(
+              onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return Container(
+                      padding: const EdgeInsets.all(20),
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          removeTodo(index);
+                        },
+                        child: const Text('Task done!'),
+                      ),
+                    );
+                  },
+                );
+              },
+              title: Text(todoList[index]),
+            ),
+          );
+        },
+        itemCount: todoList.length,
       ),
     );
   }
