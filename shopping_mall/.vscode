@@ -1,0 +1,10 @@
+{
+  "configurations": [
+    {
+      "name": "Flutter iOS",
+      "request": "launch",
+      "type": "dart",
+      "deviceId": "F9970193-19B9-4224-9253-5A556AD63AD3"
+    }
+  ]
+}
