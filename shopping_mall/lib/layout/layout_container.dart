@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 class LayoutContainer extends StatelessWidget {
   final String title;
-  final List<Widget> children;
+  final Widget children;
+  final Widget? bottom;
   const LayoutContainer(
-      {super.key, required this.children, required this.title});
+      {super.key, required this.children, required this.title, this.bottom});
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +19,10 @@ class LayoutContainer extends StatelessWidget {
           padding: const EdgeInsets.symmetric(
             horizontal: 16,
           ),
-          child: Column(
-            children: children,
-          ),
+          child: children,
         ),
       ),
+      bottomNavigationBar: bottom,
     );
   }
 }
