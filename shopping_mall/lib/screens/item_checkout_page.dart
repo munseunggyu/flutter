@@ -3,17 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:shopping_mall/constants.dart';
 import 'package:shopping_mall/layout/layout_container.dart';
 import 'package:shopping_mall/models/product.dart';
-import 'package:shopping_mall/screens/item_checkout_page.dart';
 
-class ItemBasketPage extends StatefulWidget {
-  const ItemBasketPage({super.key});
+class ItemCheckoutPage extends StatefulWidget {
+  const ItemCheckoutPage({super.key});
 
   @override
-  State<ItemBasketPage> createState() => _ItemBasketPageState();
+  State<ItemCheckoutPage> createState() => _ItemCheckoutPageState();
 }
 
-class _ItemBasketPageState extends State<ItemBasketPage> {
-  List<Product> basketList = [
+class _ItemCheckoutPageState extends State<ItemCheckoutPage> {
+  List<Product> checkoutList = [
     Product(
         productNo: 5,
         productName: "포도(Grape)",
@@ -32,19 +31,47 @@ class _ItemBasketPageState extends State<ItemBasketPage> {
   ];
   double totalPrice = 0;
 
+  TextEditingController buyerNameController = TextEditingController();
+
+  TextEditingController buyerEmailController = TextEditingController();
+
+  TextEditingController buyerPhoneController = TextEditingController();
+
+  TextEditingController receiverNameController = TextEditingController();
+
+  TextEditingController receiverPhoneController = TextEditingController();
+
+  TextEditingController receiverZipController = TextEditingController();
+
+  TextEditingController receiverAddress1Controller = TextEditingController();
+
+  TextEditingController receiverAddress2Controller = TextEditingController();
+
+  TextEditingController userPwdController = TextEditingController();
+
+  TextEditingController userConfirmPwdController = TextEditingController();
+
+  TextEditingController cardNoController = TextEditingController();
+
+  TextEditingController cardAuthController = TextEditingController();
+
+  TextEditingController cardExpiredDateController = TextEditingController();
+
+  TextEditingController cardPwdTwoDigitsController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
-    for (int i = 0; i < basketList.length; i++) {
-      totalPrice +=
-          (basketList[i].price! * quantityList[i][basketList[i].productNo]!);
+    for (int i = 0; i < checkoutList.length; i++) {
+      totalPrice += (checkoutList[i].price! *
+          quantityList[i][checkoutList[i].productNo]!);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return LayoutContainer(
-      title: '장바구니',
+      title: '결제하기',
       bottom: Padding(
         padding: const EdgeInsets.all(20),
         child: FilledButton(
@@ -54,21 +81,31 @@ class _ItemBasketPageState extends State<ItemBasketPage> {
             }));
           },
           child: Text(
-            '결제시작: ${numberFormat.format(totalPrice)}',
+            '결제하기: ${numberFormat.format(totalPrice)}',
           ),
         ),
       ),
-      children: ListView.builder(
-        itemCount: basketList.length,
-        itemBuilder: (context, index) {
-          return basketContainer(
-              productNo: basketList[index].productNo ?? 0,
-              productDetails: basketList[index].productDetails ?? '',
-              productName: basketList[index].productName ?? '',
-              productImageUrl: basketList[index].productImageUrl ?? '',
-              price: basketList[index].price ?? 0,
-              quantity: quantityList[index][basketList[index].productNo] ?? 0);
-        },
+      children: SingleChildScrollView(
+        child: Column(
+          children: [
+            ListView.builder(
+              itemCount: checkoutList.length,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return basketContainer(
+                    productNo: checkoutList[index].productNo ?? 0,
+                    productDetails: checkoutList[index].productDetails ?? '',
+                    productName: checkoutList[index].productName ?? '',
+                    productImageUrl: checkoutList[index].productImageUrl ?? '',
+                    price: checkoutList[index].price ?? 0,
+                    quantity: quantityList[index]
+                            [checkoutList[index].productNo] ??
+                        0);
+              },
+            ),
+            buyerNameTextField()
+          ],
+        ),
       ),
     );
   }
@@ -119,29 +156,8 @@ class _ItemBasketPageState extends State<ItemBasketPage> {
                 ),
                 Row(
                   children: [
-                    const Text(
-                      '수정',
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.remove,
-                      ),
-                    ),
                     Text(
-                      '$quantity',
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.add,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.delete,
-                      ),
+                      '수량: $quantity개',
                     ),
                   ],
                 ),
@@ -152,6 +168,21 @@ class _ItemBasketPageState extends State<ItemBasketPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget buyerNameTextField() {
+    return Padding(
+      padding: const EdgeInsets.all(
+        8,
+      ),
+      child: TextFormField(
+        controller: buyerNameController,
+        decoration: const InputDecoration(
+          border: OutlineInputBorder(),
+          hintText: '주문자명',
+        ),
       ),
     );
   }
