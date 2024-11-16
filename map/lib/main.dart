@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:flutter/services.dart';
+import 'package:map/screens/home_screen.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env");
@@ -21,8 +22,27 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final CameraPosition initialPosition =
-      const CameraPosition(target: LatLng(37.523373, 126.921252));
+  checkPermission() async {
+    // 위치 기능을 활성화하였는지 여부 체크
+    final isLocationEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!isLocationEnabled) {
+      throw Exception('위치 기능을 활성화 해주세요');
+    }
+
+    // 위치 권한 설정 확인
+    LocationPermission checkPermission = await Geolocator.checkPermission();
+
+    // 최초 권한 확인
+    if (checkPermission == LocationPermission.denied) {
+      checkPermission = await Geolocator.requestPermission();
+    }
+
+    // 위치 권한 체크
+    if (checkPermission != LocationPermission.always &&
+        checkPermission != LocationPermission.whileInUse) {
+      throw Exception('위치 권한을 활성화 해주세요');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +52,16 @@ class _MyAppState extends State<MyApp> {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: Column(
-        children: [
-          Expanded(
-            child: GoogleMap(initialCameraPosition: initialPosition),
-          ),
-        ],
+      home: FutureBuilder(
+        future: checkPermission(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasError) {
+            return const Center(
+              child: Text('에러 발생'),
+            );
+          }
+          return const HomeScreen();
+        },
       ),
     );
   }
