@@ -1,3 +1,4 @@
+import 'package:easy_practice/agora_test/agora_test.dart';
 import 'package:easy_practice/future_stream/FutureStream.dart';
 import 'package:easy_practice/screens/home_screen.dart';
 // import 'package:easy_practice/Navigators/navigation_pracitce.dart';
@@ -20,7 +21,7 @@ void main() {
           ),
         ),
         // home: const HomeScreen(),
-        home: const Futurestream()
+        home: const AgoraTest()
 
         // 라우트 예제;
         // initialRoute: '/',
