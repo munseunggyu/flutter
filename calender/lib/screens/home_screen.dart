@@ -59,13 +59,27 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showModalBottomSheet(
+        onPressed: () async {
+          final schedule = await showModalBottomSheet<Schedule>(
             context: context,
             builder: (_) {
-              return const ScheduleBottomSheet();
+              return ScheduleBottomSheet(selectedDay: selectedDay);
             },
           );
+          if (schedule == null) {
+            return;
+          }
+
+          setState(() {
+            schedules = {
+              ...schedules,
+              schedule.date: [
+                if (schedules.containsKey(schedule.date))
+                  ...schedules[schedule.date]!,
+                schedule
+              ]
+            };
+          });
         },
         backgroundColor: primaryColor,
         child: const Icon(
@@ -119,34 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           endTime: scheduleModel.endTime,
                           startTime: scheduleModel.startTime);
                     },
-                  )
-                  // ListView(
-                  //   children:
-                  // children: schedules.containsKey(selectedDay)
-                  //     ? schedules[selectedDay]!
-                  //         .map((e) => ScheduleCard(
-                  //               color: Color(
-                  //                 int.parse(
-                  //                   'FF${e.color}',
-                  //                   radix: 16,
-                  //                 ),
-                  //               ),
-                  //               startTime: e.startTime,
-                  //               endTime: e.endTime,
-                  //               content: e.content,
-                  //             ))
-                  //         .toList()
-                  //     : []
-                  // [
-                  // ScheduleCard(
-                  //   color: Colors.blue,
-                  //   startTime: DateTime(2024, 11, 20, 11),
-                  //   endTime: DateTime(2024, 11, 20, 12),
-                  //   content: 'Flutter Study',
-                  // ),
-                  // ],
-                  // ),
-                  ),
+                  )),
             ),
           ],
         ),
@@ -163,4 +150,6 @@ class _HomeScreenState extends State<HomeScreen> {
   bool selectedDayPredicate(DateTime day) {
     return day.isAtSameMomentAs(selectedDay);
   }
+
+  onSavePressed() {}
 }

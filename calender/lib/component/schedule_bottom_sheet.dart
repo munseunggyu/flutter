@@ -1,11 +1,11 @@
 import 'package:calender/component/custom_text_field.dart';
 import 'package:calender/const/color.dart';
+import 'package:calender/model/schedule.dart';
 import 'package:flutter/material.dart';
 
 class ScheduleBottomSheet extends StatefulWidget {
-  const ScheduleBottomSheet({
-    super.key,
-  });
+  final DateTime selectedDay;
+  const ScheduleBottomSheet({super.key, required this.selectedDay});
 
   @override
   State<ScheduleBottomSheet> createState() => _ScheduleBottomSheetState();
@@ -14,6 +14,12 @@ class ScheduleBottomSheet extends StatefulWidget {
 typedef OnColorSelected = void Function(String color);
 
 class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
+  int? startTime;
+  int? endTime;
+  String? content;
+
+  final GlobalKey<FormState> formKey = GlobalKey();
+
   String selectedColor = categoryColors.first;
 
   void changeColor(String color) {
@@ -31,36 +37,102 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
           padding: const EdgeInsets.all(
             16,
           ),
-          child: Column(
-            children: [
-              const _Time(),
-              const SizedBox(
-                height: 8,
-              ),
-              const _Content(),
-              const SizedBox(
-                height: 8,
-              ),
-              _Categories(
-                selectedColor: selectedColor,
-                onTap: changeColor,
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              const _SaveButton(),
-            ],
+          child: Form(
+            key: formKey,
+            child: Column(
+              children: [
+                _Time(
+                  onEndSaved: onEndTimeSaved,
+                  onEndValidate: onEndTimeValidate,
+                  onStartSaved: onStartTimeSaved,
+                  onStartValidate: onStartTimeValidate,
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                _Content(
+                  onSaved: onContentTimeSaved,
+                  onValidate: onContentTimeValidate,
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                _Categories(
+                  selectedColor: selectedColor,
+                  onTap: changeColor,
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                _SaveButton(onPressed: onPressed),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+
+  onPressed() {
+    final isValid = formKey.currentState!.validate();
+    if (!isValid) return;
+    formKey.currentState!.save();
+    final schedule = Schedule(
+      id: 999,
+      startTime: startTime!,
+      endTime: endTime!,
+      content: content!,
+      color: selectedColor,
+      date: widget.selectedDay,
+      createdAt: DateTime.now().toUtc(),
+    );
+
+    Navigator.of(context).pop(schedule);
+  }
+
+  onStartTimeSaved(String? val) {
+    if (val == null) {
+      return;
+    }
+    startTime = int.parse(val);
+  }
+
+  String? onStartTimeValidate(String? val) {
+    if (val == null) return '값을 입력해주세요.';
+    if (int.tryParse(val) == null) {
+      return '숫자를 입력해주세요';
+    }
+    return null;
+  }
+
+  onEndTimeSaved(String? val) {
+    if (val == null) return;
+    endTime = int.parse(val);
+  }
+
+  String? onEndTimeValidate(String? val) {
+    if (val == null) return '값을 입력해주세요.';
+    if (int.tryParse(val) == null) {
+      return '숫자를 입력해주세요';
+    }
+    return null;
+  }
+
+  onContentTimeSaved(String? val) {
+    if (val == null) return;
+    content = val;
+  }
+
+  String? onContentTimeValidate(String? val) {
+    if (val == null) return '값을 입력해주세요.';
+
+    return null;
+  }
 }
 
 class _SaveButton extends StatelessWidget {
-  const _SaveButton({
-    super.key,
-  });
+  VoidCallback onPressed;
+  _SaveButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +140,7 @@ class _SaveButton extends StatelessWidget {
       children: [
         Expanded(
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: onPressed,
             style: ElevatedButton.styleFrom(
               backgroundColor: primaryColor,
               foregroundColor: Colors.white,
@@ -127,41 +199,57 @@ class _Categories extends StatelessWidget {
 }
 
 class _Content extends StatelessWidget {
-  const _Content({
-    super.key,
-  });
+  final FormFieldSetter<String> onSaved;
+  final FormFieldValidator<String> onValidate;
+  const _Content({super.key, required this.onSaved, required this.onValidate});
 
   @override
   Widget build(BuildContext context) {
-    return const Expanded(
+    return Expanded(
       child: CustomTextField(
         label: '내용',
         expand: true,
+        onSaved: onSaved,
+        validator: onValidate,
       ),
     );
   }
 }
 
 class _Time extends StatelessWidget {
-  const _Time({
-    super.key,
-  });
+  final FormFieldSetter<String> onStartSaved;
+  final FormFieldSetter<String> onEndSaved;
+  final FormFieldValidator<String> onStartValidate;
+  final FormFieldValidator<String> onEndValidate;
+
+  final GlobalKey<FormState> formKey = GlobalKey();
+
+  _Time(
+      {super.key,
+      required this.onEndSaved,
+      required this.onEndValidate,
+      required this.onStartSaved,
+      required this.onStartValidate});
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       children: [
         Expanded(
           child: CustomTextField(
             label: '시작 시간',
+            onSaved: onStartSaved,
+            validator: onStartValidate,
           ),
         ),
-        SizedBox(
+        const SizedBox(
           width: 16,
         ),
         Expanded(
           child: CustomTextField(
             label: '마감 시간',
+            onSaved: onEndSaved,
+            validator: onEndValidate,
           ),
         ),
       ],

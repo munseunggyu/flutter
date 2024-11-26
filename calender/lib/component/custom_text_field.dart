@@ -4,7 +4,14 @@ import 'package:flutter/material.dart';
 class CustomTextField extends StatelessWidget {
   final String label;
   final bool expand;
-  const CustomTextField({super.key, required this.label, this.expand = false});
+  final FormFieldSetter<String> onSaved;
+  final FormFieldValidator<String> validator;
+  const CustomTextField(
+      {super.key,
+      required this.label,
+      this.expand = false,
+      required this.onSaved,
+      required this.validator});
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +34,8 @@ class CustomTextField extends StatelessWidget {
         filled: true,
         fillColor: Colors.grey[300],
       ),
+      onSaved: onSaved,
+      validator: validator,
       maxLines: expand ? null : 1,
       minLines: expand ? null : 1,
       expands: expand,
