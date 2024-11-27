@@ -4,8 +4,10 @@ import 'package:calender/component/schedule_bottom_sheet.dart';
 import 'package:calender/component/schedule_card.dart';
 import 'package:calender/component/today_banner.dart';
 import 'package:calender/const/color.dart';
+import 'package:calender/database/drift.dart';
 import 'package:calender/model/schedule.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -60,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final schedule = await showModalBottomSheet<Schedule>(
+          final schedule = await showModalBottomSheet(
             context: context,
             builder: (_) {
               return ScheduleBottomSheet(selectedDay: selectedDay);
@@ -110,28 +112,48 @@ class _HomeScreenState extends State<HomeScreen> {
                     right: 16,
                     top: 16,
                   ),
-                  child: ListView.separated(
-                    separatorBuilder: (context, index) {
-                      return const SizedBox(
-                        height: 8,
-                      );
-                    },
-                    itemCount: schedules.containsKey(selectedDay)
-                        ? schedules[selectedDay]!.length
-                        : 0,
-                    itemBuilder: (BuildContext context, int index) {
-                      final scheduleModel = schedules[selectedDay]![index];
+                  child: FutureBuilder<List<ScheduleTableData>>(
+                    future: GetIt.I<AppDatabase>().getSchedules(selectedDay),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return Center(
+                          child: Text(snapshot.error.toString()),
+                        );
+                      }
+                      if (!snapshot.hasData &&
+                          snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: Text('loading...'),
+                        );
+                      }
 
-                      return ScheduleCard(
-                          color: Color(
-                            int.parse(
-                              'FF${scheduleModel.color}',
-                              radix: 16,
-                            ),
-                          ),
-                          content: scheduleModel.content,
-                          endTime: scheduleModel.endTime,
-                          startTime: scheduleModel.startTime);
+                      final schedules = snapshot.data!;
+                      final selectedSchedules = schedules.where((e) {
+                        return e.date.isAtSameMomentAs(selectedDay);
+                      }).toList();
+
+                      return ListView.separated(
+                        separatorBuilder: (context, index) {
+                          return const SizedBox(
+                            height: 8,
+                          );
+                        },
+                        itemCount: selectedSchedules.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final schedule = selectedSchedules[index];
+
+                          return ScheduleCard(
+                              color: Color(
+                                int.parse(
+                                  'FF${schedule.color}',
+                                  radix: 16,
+                                ),
+                              ),
+                              content: schedule.content,
+                              endTime: schedule.endTime,
+                              startTime: schedule.startTime);
+                        },
+                      );
                     },
                   )),
             ),

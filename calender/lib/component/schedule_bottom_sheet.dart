@@ -1,7 +1,10 @@
 import 'package:calender/component/custom_text_field.dart';
 import 'package:calender/const/color.dart';
+import 'package:calender/database/drift.dart';
 import 'package:calender/model/schedule.dart';
+import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 class ScheduleBottomSheet extends StatefulWidget {
   final DateTime selectedDay;
@@ -73,21 +76,20 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
     );
   }
 
-  onPressed() {
+  onPressed() async {
     final isValid = formKey.currentState!.validate();
     if (!isValid) return;
     formKey.currentState!.save();
-    final schedule = Schedule(
-      id: 999,
-      startTime: startTime!,
-      endTime: endTime!,
-      content: content!,
-      color: selectedColor,
-      date: widget.selectedDay,
-      createdAt: DateTime.now().toUtc(),
-    );
+    final database = GetIt.I<AppDatabase>();
+    await database.createSchedule(ScheduleTableCompanion(
+      startTime: Value(startTime!),
+      endTime: Value(endTime!),
+      content: Value(content!),
+      date: Value(widget.selectedDay),
+      createdAt: Value(DateTime.now().toUtc()),
+    ));
 
-    Navigator.of(context).pop(schedule);
+    Navigator.of(context).pop();
   }
 
   onStartTimeSaved(String? val) {
