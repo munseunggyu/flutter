@@ -1,6 +1,39 @@
 import 'package:easy_practice/constant/color.dart';
 import 'package:flutter/material.dart';
 
+class _SliverFixedHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final Widget child;
+  final double maxHeight;
+  final double minHeight;
+
+  _SliverFixedHeaderDelegate({
+    required this.child,
+    required this.maxHeight,
+    required this.minHeight,
+  });
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return SizedBox.expand(
+      child: child,
+    );
+  }
+
+  @override
+  double get maxExtent => maxHeight;
+
+  @override
+  double get minExtent => minHeight;
+
+  @override
+  bool shouldRebuild(_SliverFixedHeaderDelegate oldDelegate) {
+    return oldDelegate.minHeight != minHeight ||
+        oldDelegate.maxHeight != maxHeight ||
+        oldDelegate.child != child;
+  }
+}
+
 class CustomScrollViewScreen extends StatelessWidget {
   final List<int> numbers = List.generate(100, (index) => index);
   CustomScrollViewScreen({super.key});
@@ -26,6 +59,14 @@ class CustomScrollViewScreen extends StatelessWidget {
             title: Text('data'), // 하단 widget 추가
           ),
         ),
+        SliverPersistentHeader(
+            delegate: _SliverFixedHeaderDelegate(
+                child: Container(
+                  color: Colors.black,
+                  child: const Text('data'),
+                ),
+                maxHeight: 200,
+                minHeight: 100)),
         SliverGrid(
             delegate: SliverChildBuilderDelegate((context, index) {
               return renderContainer(
