@@ -11,7 +11,20 @@ class CustomScrollViewScreen extends StatelessWidget {
         body: CustomScrollView(
       slivers: [
         const SliverAppBar(
-          title: Text('Title'),
+          backgroundColor: Colors.blue,
+          title: Text(
+            'Title',
+            style: TextStyle(color: Colors.white),
+          ),
+          floating: true, // 위로 스크롤 시 노출됨
+          // pinned: true, // 상단 고정 됨
+          snap: true, // 살짝만 움직여도 floating이 동작됨 floating true 필수
+          stretch: true, // Appbar가 따라옴
+          // expandedHeight: 200, // 최대 높이값
+          collapsedHeight: 100, // 최소 높이값
+          flexibleSpace: FlexibleSpaceBar(
+            title: Text('data'), // 하단 widget 추가
+          ),
         ),
         SliverGrid(
             delegate: SliverChildBuilderDelegate((context, index) {
