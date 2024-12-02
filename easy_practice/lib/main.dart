@@ -1,3 +1,8 @@
+import 'package:easy_practice/CustomScoll/custom_scroll_view_screen.dart';
+import 'package:easy_practice/CustomScoll/refresh_indicator.dart';
+import 'package:easy_practice/GridViewPractice/grid_view_practice.dart';
+import 'package:easy_practice/ListViewPractice/list_view_practice.dart';
+import 'package:easy_practice/ReorderableListViewPractice/re_orderable_list_view_practice.dart';
 import 'package:easy_practice/SingleChildScroll/single_child_scroll.dart';
 import 'package:easy_practice/agora_test/agora_test.dart';
 import 'package:easy_practice/future_stream/FutureStream.dart';
@@ -23,7 +28,12 @@ void main() {
       ),
       // home: const HomeScreen(),
       // home: const AgoraTest()
-      home: const SingleChildScroll(),
+      // home: const SingleChildScroll(),
+      // home: ListViewPractice(),
+      // home: GridViewPractice(),
+      // home: const ReOrderableListViewPractice(),
+      // home: CustomScrollViewScreen(),
+      home: RefreshIndicatorScreen(),
 
       // 라우트 예제;
       // initialRoute: '/',
