@@ -33,9 +33,16 @@ class CategoryStat extends StatelessWidget {
                       topRight: Radius.circular(16),
                     ),
                   ),
-                  child: const Text(
-                    '종류별 통계',
-                    textAlign: TextAlign.center,
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    child: Text(
+                      '종류별 통계',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                   ),
                 ),
                 Expanded(
