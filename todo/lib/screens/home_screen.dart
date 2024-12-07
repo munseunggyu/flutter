@@ -1,6 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:todo/models/user.dart';
 import 'package:todo/screens/add_task.dart';
+import 'package:http/http.dart' as http;
+import 'package:todo/screens/user_screen.dart';
+import 'package:todo/services/user_api.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -13,6 +19,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<String> todoList = [];
+  List<User> users = [];
 
   void addTodo({required String todoText}) {
     if (todoList.contains(todoText)) {
@@ -68,6 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    fetchUser();
     loadData();
   }
 
@@ -104,49 +112,16 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: ListView.builder(
-        itemBuilder: (context, index) {
-          return Dismissible(
-            key: UniqueKey(),
-            direction: DismissDirection.startToEnd,
-            background: Container(
-              color: Colors.red,
-              child: const Row(
-                children: [
-                  Icon(
-                    Icons.check,
-                    color: Colors.white,
-                  ),
-                ],
-              ),
-            ),
-            onDismissed: (direction) {
-              removeTodo(index);
-            },
-            child: ListTile(
-              onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) {
-                    return Container(
-                      padding: const EdgeInsets.all(20),
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          removeTodo(index);
-                        },
-                        child: const Text('Task done!'),
-                      ),
-                    );
-                  },
-                );
-              },
-              title: Text(todoList[index]),
-            ),
-          );
-        },
-        itemCount: todoList.length,
-      ),
+      body: users.isEmpty
+          ? const Center(child: CircularProgressIndicator())
+          : UserView(users: users),
     );
+  }
+
+  fetchUser() async {
+    final response = await UserApi.fetchUser();
+    setState(() {
+      users = response;
+    });
   }
 }
