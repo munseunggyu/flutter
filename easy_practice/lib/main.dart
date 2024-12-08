@@ -6,6 +6,7 @@ import 'package:easy_practice/ReorderableListViewPractice/re_orderable_list_view
 import 'package:easy_practice/SingleChildScroll/single_child_scroll.dart';
 import 'package:easy_practice/agora_test/agora_test.dart';
 import 'package:easy_practice/future_stream/FutureStream.dart';
+import 'package:easy_practice/provider_practice/provider_practice.dart';
 import 'package:easy_practice/screens/home_screen.dart';
 // import 'package:easy_practice/Navigators/navigation_pracitce.dart';
 // import 'package:easy_practice/Navigators/route_one_screen.dart';
@@ -33,7 +34,8 @@ void main() {
       // home: GridViewPractice(),
       // home: const ReOrderableListViewPractice(),
       // home: CustomScrollViewScreen(),
-      home: RefreshIndicatorScreen(),
+      // home: RefreshIndicatorScreen(),
+      home: const ProviderPractice(),
 
       // 라우트 예제;
       // initialRoute: '/',
