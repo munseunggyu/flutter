@@ -6,5 +6,6 @@ class Controller extends GetxController {
 
   void increment() {
     _x++;
+    update();
   }
 }

@@ -3,8 +3,9 @@ import 'package:get/get.dart';
 import 'package:getx_practice/controlls/controller.dart';
 
 class HomeScreen extends StatelessWidget {
-  Controller controller = Get.put(Controller());
-  HomeScreen({super.key});
+  // final Controller controller = Get.put(Controller());
+
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +24,18 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              GetBuilder<Controller>(
+                builder: (controller) {
+                  // return Text('Current value is ${controller.x}');
+                  return Text('current ${Get.find<Controller>().x}');
+                },
+                init: Controller(),
+              ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  // controller.increment();
+                  Get.find<Controller>().increment();
+                },
                 child: const Text(
                   'Add number',
                 ),
