@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getx_practice/controlls/controller.dart';
 import 'package:getx_practice/screens/person_screen.dart';
+import 'package:getx_practice/screens/shopping_screen.dart';
 import 'package:getx_practice/screens/simple_count.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -21,7 +22,9 @@ class HomeScreen extends StatelessWidget {
         ),
         backgroundColor: Colors.blue,
       ),
-      body: PersonScreen(),
+      backgroundColor: Colors.red,
+      body: ShoppingScreen(),
+      // body: PersonScreen(),
       // body: const SafeArea(child: SimpleCount()),
     );
   }
