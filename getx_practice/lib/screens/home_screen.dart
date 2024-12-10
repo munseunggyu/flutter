@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getx_practice/controlls/controller.dart';
+import 'package:getx_practice/screens/person_screen.dart';
+import 'package:getx_practice/screens/simple_count.dart';
 
 class HomeScreen extends StatelessWidget {
   // final Controller controller = Get.put(Controller());
@@ -19,31 +21,8 @@ class HomeScreen extends StatelessWidget {
         ),
         backgroundColor: Colors.blue,
       ),
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GetBuilder<Controller>(
-                builder: (controller) {
-                  // return Text('Current value is ${controller.x}');
-                  return Text('current ${Get.find<Controller>().x}');
-                },
-                init: Controller(),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  // controller.increment();
-                  Get.find<Controller>().increment();
-                },
-                child: const Text(
-                  'Add number',
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
+      body: PersonScreen(),
+      // body: const SafeArea(child: SimpleCount()),
     );
   }
 }
