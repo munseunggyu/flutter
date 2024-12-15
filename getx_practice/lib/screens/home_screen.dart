@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getx_practice/controlls/controller.dart';
+import 'package:getx_practice/screens/makeup_screen.dart';
 import 'package:getx_practice/screens/person_screen.dart';
 import 'package:getx_practice/screens/shopping_screen.dart';
 import 'package:getx_practice/screens/simple_count.dart';
@@ -20,10 +21,10 @@ class HomeScreen extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.black,
       ),
-      backgroundColor: Colors.red,
-      body: ShoppingScreen(),
+      body: MakeupScreen(),
+      // body: ShoppingScreen(),
       // body: PersonScreen(),
       // body: const SafeArea(child: SimpleCount()),
     );
