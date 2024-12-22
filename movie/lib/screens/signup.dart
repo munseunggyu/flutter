@@ -1,12 +1,17 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:movie/common/helper/navigation/app_navigation.dart';
 import 'package:movie/core/configs/theme/app_colors.dart';
-import 'package:movie/presentation/auth/pages/signup.dart';
+import 'package:movie/screens/signin.dart';
+import 'package:movie/services/apis.dart';
+import 'package:movie/services/auth_service.dart';
+import 'package:movie/utils/app_navigation.dart';
 import 'package:reactive_button/reactive_button.dart';
 
-class Signin extends StatelessWidget {
-  const Signin({super.key});
+class Signup extends StatelessWidget {
+  Signup({super.key});
+
+  final TextEditingController _emailCon = TextEditingController();
+  final TextEditingController _passwordCon = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +26,7 @@ class Signin extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _signinText(),
+            _signupText(),
             const SizedBox(
               height: 30,
             ),
@@ -33,20 +38,20 @@ class Signin extends StatelessWidget {
             const SizedBox(
               height: 60,
             ),
-            _signinButton(),
+            _signupButton(),
             const SizedBox(
               height: 10,
             ),
-            _signupText(context),
+            _signinText(context),
           ],
         ),
       ),
     );
   }
 
-  Widget _signinText() {
+  Widget _signupText() {
     return const Text(
-      'Sign In',
+      'Sign Up',
       style: TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 24,
@@ -55,31 +60,40 @@ class Signin extends StatelessWidget {
   }
 
   Widget _emailFeild() {
-    return const TextField(
-      decoration: InputDecoration(
+    return TextField(
+      controller: _emailCon,
+      decoration: const InputDecoration(
         hintText: 'Email',
       ),
     );
   }
 
   Widget _passwordFeild() {
-    return const TextField(
-      decoration: InputDecoration(
+    return TextField(
+      controller: _passwordCon,
+      decoration: const InputDecoration(
         hintText: 'Password',
       ),
     );
   }
 
-  Widget _signinButton() {
+  Widget _signupButton() {
     return ReactiveButton(
       activeColor: AppColors.primary,
-      onPressed: () async {},
+      onPressed: () async {
+        var email = _emailCon.text;
+        var password = _emailCon.text;
+        // AuthService.signupApi(email, password);
+        var res = await Apis.instance.signup(email, password);
+
+        print(res);
+      },
       onSuccess: () {},
       onFailure: (error) {},
     );
   }
 
-  Widget _signupText(BuildContext context) {
+  Widget _signinText(BuildContext context) {
     return Text.rich(
       TextSpan(
         children: [
@@ -95,7 +109,7 @@ class Signin extends StatelessWidget {
                 ..onTap = () {
                   AppNavigator.push(
                     context,
-                    Signup(),
+                    Signin(),
                   );
                 }),
         ],

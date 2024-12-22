@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie/core/configs/theme/app_theme.dart';
-import 'package:movie/presentation/splash/bloc/splash_cubit.dart';
-import 'package:movie/presentation/splash/pages/splash.dart';
+import 'package:movie/screens/splash.dart';
 import 'package:movie/service_locator.dart';
+import 'package:get/get.dart';
+import 'package:movie/services/access_token_service.dart';
+import 'package:movie/services/auth_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   setupServiceLocator();
+  Get.put(AccessTokenService());
+
   runApp(const MyApp());
 }
 
@@ -21,13 +24,10 @@ class MyApp extends StatelessWidget {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent, // 상태바 색상
     ));
-    return BlocProvider(
-      create: (context) => SplashCubit()..appStarted(),
-      child: MaterialApp(
-        theme: AppTheme.appTheme,
-        debugShowCheckedModeBanner: false,
-        home: const Splash(),
-      ),
+    return MaterialApp(
+      theme: AppTheme.appTheme,
+      debugShowCheckedModeBanner: false,
+      home: const Splash(),
     );
   }
 }

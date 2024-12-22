@@ -1,20 +1,20 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:movie/common/helper/navigation/app_navigation.dart';
+import 'package:get/get.dart';
 import 'package:movie/core/configs/theme/app_colors.dart';
-import 'package:movie/data/auth/models/signup_req_params.dart';
-import 'package:movie/data/auth/repositories/auth.dart';
-import 'package:movie/data/auth/source/auth_api_service.dart';
-import 'package:movie/domain/auth/usecases/%08signup.dart';
-import 'package:movie/presentation/auth/pages/signin.dart';
-import 'package:movie/presentation/auth/pages/signup.dart';
+import 'package:movie/screens/signup.dart';
+import 'package:movie/services/access_token_service.dart';
+import 'package:movie/services/apis.dart';
+import 'package:movie/utils/app_navigation.dart';
 import 'package:reactive_button/reactive_button.dart';
 
-class Signup extends StatelessWidget {
-  Signup({super.key});
-
+class Signin extends StatelessWidget {
   final TextEditingController _emailCon = TextEditingController();
   final TextEditingController _passwordCon = TextEditingController();
+
+  final AccessTokenService accessTokenService = Get.find<AccessTokenService>();
+
+  Signin({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class Signup extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _signupText(),
+            _signinText(),
             const SizedBox(
               height: 30,
             ),
@@ -41,20 +41,20 @@ class Signup extends StatelessWidget {
             const SizedBox(
               height: 60,
             ),
-            _signupButton(),
+            _signinButton(),
             const SizedBox(
               height: 10,
             ),
-            _signinText(context),
+            _signupText(context),
           ],
         ),
       ),
     );
   }
 
-  Widget _signupText() {
+  Widget _signinText() {
     return const Text(
-      'Sign Up',
+      'Sign In',
       style: TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 24,
@@ -80,25 +80,24 @@ class Signup extends StatelessWidget {
     );
   }
 
-  Widget _signupButton() {
+  Widget _signinButton() {
     return ReactiveButton(
       activeColor: AppColors.primary,
       onPressed: () async {
-        SignupUseCase(
-          authRepository: AuthRepositoryImpl(
-            authApiService: AuthApiServiceImpl(),
-          ),
-        ).call(
-          params: SignupReqParams(
-              email: _emailCon.text, password: _passwordCon.text),
-        );
+        var email = _emailCon.text;
+        var password = _emailCon.text;
+        // AuthService.signupApi(email, password);
+        var res = await Apis.instance.signin(email, password);
+        if (res['success']) {
+          accessTokenService.saveAccessToken(res['user']['token']);
+        }
       },
       onSuccess: () {},
       onFailure: (error) {},
     );
   }
 
-  Widget _signinText(BuildContext context) {
+  Widget _signupText(BuildContext context) {
     return Text.rich(
       TextSpan(
         children: [
@@ -114,7 +113,7 @@ class Signup extends StatelessWidget {
                 ..onTap = () {
                   AppNavigator.push(
                     context,
-                    const Signin(),
+                    Signup(),
                   );
                 }),
         ],
