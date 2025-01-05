@@ -1,10 +1,30 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:middle_class/common/component/custom_text_form_field.dart';
 import 'package:middle_class/common/const/colors.dart';
 import 'package:middle_class/common/layout/default_layout.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  String username = '';
+  String password = '';
+
+  final dio = Dio();
+
+  final emulatorIp = 'http://10.0.2.2:3000';
+
+  final simulatorIp = 'http://localhost:3000';
+
+  String get ip => Platform.isIOS ? simulatorIp : emulatorIp;
 
   @override
   Widget build(BuildContext context) {
@@ -35,21 +55,44 @@ class LoginScreen extends StatelessWidget {
                 ),
                 CustomTextFormField(
                   hintText: '이메일을 입력해주세요.',
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    setState(() {
+                      username = value;
+                    });
+                  },
                 ),
                 const SizedBox(
                   height: 10,
                 ),
                 CustomTextFormField(
                   hintText: '비밀번호를 입력해주세요.',
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    setState(() {
+                      password = value;
+                    });
+                  },
                   obscureText: true,
                 ),
                 const SizedBox(
                   height: 10,
                 ),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    // test@codefactory.ai
+                    //testtest
+                    String rawString = '$username:$password';
+
+                    Codec<String, String> stringToBase64 = utf8.fuse(base64);
+
+                    String token = stringToBase64.encode(rawString);
+                    print(username);
+                    print(password);
+
+                    final resp = await dio.post('$ip/auth/login',
+                        options: Options(
+                            headers: {'authorization': 'Basic $token'}));
+                    // print(resp.data);
+                  },
                   style: ElevatedButton.styleFrom(
                       backgroundColor: PRIMARY_COLOR,
                       foregroundColor: Colors.white,

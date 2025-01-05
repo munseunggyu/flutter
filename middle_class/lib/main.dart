@@ -16,6 +16,6 @@ class _App extends StatelessWidget {
         theme: ThemeData(
           fontFamily: 'NotoSans',
         ),
-        home: const LoginScreen());
+        home: LoginScreen());
   }
 }
