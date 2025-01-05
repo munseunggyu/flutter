@@ -3,9 +3,12 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:middle_class/common/component/custom_text_form_field.dart';
 import 'package:middle_class/common/const/colors.dart';
+import 'package:middle_class/common/const/data.dart';
 import 'package:middle_class/common/layout/default_layout.dart';
+import 'package:middle_class/common/view/root_tab.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -19,6 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String password = '';
 
   final dio = Dio();
+  final storage = const FlutterSecureStorage();
 
   final emulatorIp = 'http://10.0.2.2:3000';
 
@@ -80,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: () async {
                     // test@codefactory.ai
                     //testtest
-                    String rawString = '$username:$password';
+                    String rawString = 'test@codefactory.ai:testtest';
 
                     Codec<String, String> stringToBase64 = utf8.fuse(base64);
 
@@ -88,9 +92,27 @@ class _LoginScreenState extends State<LoginScreen> {
                     print(username);
                     print(password);
 
-                    final resp = await dio.post('$ip/auth/login',
-                        options: Options(
-                            headers: {'authorization': 'Basic $token'}));
+                    final resp = await dio.post(
+                      '$ip/auth/login',
+                      options: Options(
+                        headers: {'authorization': 'Basic $token'},
+                      ),
+                    );
+
+                    final accessToken = resp.data['accessToken'];
+                    final refreshToken = resp.data['refreshToken'];
+                    print(accessToken);
+
+                    await storage.write(
+                        key: ACCESS_TOKEN_KEY, value: accessToken);
+                    await storage.write(
+                        key: REFRESH_TOKEN_KEY, value: refreshToken);
+
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const RootTab(),
+                      ),
+                    );
                     // print(resp.data);
                   },
                   style: ElevatedButton.styleFrom(
