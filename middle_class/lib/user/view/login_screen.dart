@@ -24,12 +24,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final dio = Dio();
   final storage = const FlutterSecureStorage();
 
-  final emulatorIp = 'http://10.0.2.2:3000';
-
-  final simulatorIp = 'http://localhost:3000';
-
-  String get ip => Platform.isIOS ? simulatorIp : emulatorIp;
-
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
@@ -89,8 +83,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     Codec<String, String> stringToBase64 = utf8.fuse(base64);
 
                     String token = stringToBase64.encode(rawString);
-                    print(username);
-                    print(password);
 
                     final resp = await dio.post(
                       '$ip/auth/login',
@@ -101,7 +93,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     final accessToken = resp.data['accessToken'];
                     final refreshToken = resp.data['refreshToken'];
-                    print(accessToken);
 
                     await storage.write(
                         key: ACCESS_TOKEN_KEY, value: accessToken);
@@ -113,7 +104,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         builder: (_) => const RootTab(),
                       ),
                     );
-                    // print(resp.data);
                   },
                   style: ElevatedButton.styleFrom(
                       backgroundColor: PRIMARY_COLOR,
