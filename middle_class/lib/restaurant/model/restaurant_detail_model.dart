@@ -20,13 +20,13 @@ class RestaurantDetailModel extends RestaurantModel {
   factory RestaurantDetailModel.fromJson({
     required Map<String, dynamic> json,
   }) {
-    print(json['products']);
     return RestaurantDetailModel(
       id: json['id'],
       deliveryFee: json['deliveryFee'],
       deliveryTime: json['deliveryTime'],
       name: json['name'],
-      priceRange: RestaurantPriceRange.high,
+      priceRange: RestaurantPriceRange.values
+          .firstWhere((e) => e.name == json['priceRange']),
       ratings: json['ratings'],
       ratingsCount: json['ratingsCount'],
       tags: List<String>.from(json['tags']),

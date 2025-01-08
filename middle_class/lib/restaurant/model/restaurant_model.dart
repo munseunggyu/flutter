@@ -1,4 +1,4 @@
-enum RestaurantPriceRange { high, medium, low }
+enum RestaurantPriceRange { expensive, medium, cheap }
 
 class RestaurantModel {
   final String id;
@@ -31,9 +31,8 @@ class RestaurantModel {
       deliveryFee: json['deliveryFee'],
       deliveryTime: json['deliveryTime'],
       name: json['name'],
-      // priceRange: RestaurantPriceRange.values
-      //     .firstWhere((e) => e.name == json['priceRange']),
-      priceRange: RestaurantPriceRange.high,
+      priceRange: RestaurantPriceRange.values
+          .firstWhere((e) => e.name == json['priceRange']),
       ratings: json['ratings'],
       ratingsCount: json['ratingsCount'],
       tags: List<String>.from(json['tags']),

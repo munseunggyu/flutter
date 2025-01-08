@@ -16,7 +16,6 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(image);
     return Column(
       children: [
         IntrinsicHeight(
