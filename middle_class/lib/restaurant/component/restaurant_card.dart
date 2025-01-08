@@ -30,7 +30,7 @@ class RestaurantCard extends StatelessWidget {
   factory RestaurantCard.fromModel(
       {required RestaurantModel model, bool isDetail = false}) {
     return RestaurantCard(
-      image: Image.network('$ip/${model.thumbUrl}'),
+      image: Image.network(model.thumbUrl),
       name: model.name,
       deliveryFee: model.deliveryFee,
       deliveryTime: model.deliveryTime,
