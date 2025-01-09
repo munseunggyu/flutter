@@ -2,39 +2,49 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:middle_class/common/const/data.dart';
+import 'package:middle_class/common/dio/dio.dart';
 import 'package:middle_class/common/layout/default_layout.dart';
 import 'package:middle_class/product/component/product_card.dart';
 import 'package:middle_class/restaurant/component/restaurant_card.dart';
 import 'package:middle_class/restaurant/model/restaurant_detail_model.dart';
+import 'package:middle_class/restaurant/repository/restaurant_repository.dart';
 
 class RestaurantDetailScreen extends StatelessWidget {
   final String id;
   const RestaurantDetailScreen({super.key, required this.id});
   final storage = const FlutterSecureStorage();
 
-  Future<Map<String, dynamic>> getRestaruantDetail() async {
+  Future<RestaurantDetailModel> getRestaruantDetail() async {
     final dio = Dio();
-    final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
 
-    final resp = await dio.get('$ip/restaurant/$id',
-        options: Options(headers: {'authorization': 'Bearer $accessToken'}));
+    dio.interceptors.add(CustomInterceptor(storage: storage));
 
-    return resp.data;
+    final respository = RestaurantRepository(dio, baseUrl: '$ip/restaurant');
+
+    return respository.getRestaurantDetail(id: id);
   }
 
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
       title: '불',
-      child: FutureBuilder<Map<String, dynamic>>(
+      child: FutureBuilder<RestaurantDetailModel>(
           future: getRestaruantDetail(),
-          builder: (_, AsyncSnapshot<Map<String, dynamic>> snapshot) {
+          builder: (_, AsyncSnapshot<RestaurantDetailModel> snapshot) {
+            if (snapshot.hasError) {
+              print(snapshot.error);
+              return const Center(
+                child: Text('Error'),
+              );
+            }
+
             if (!snapshot.hasData) {
               return const Center(
                 child: CircularProgressIndicator(),
               );
             }
-            final item = RestaurantDetailModel.fromJson(snapshot.data!);
+            // final item = RestaurantDetailModel.fromJson(snapshot.data!);
+            final item = snapshot.data!;
 
             return CustomScrollView(
               slivers: [
@@ -81,7 +91,7 @@ class RestaurantDetailScreen extends StatelessWidget {
                 detail: item.detail,
                 price: item.price),
           );
-        }, childCount: 10),
+        }, childCount: model.length),
       ),
     );
   }
