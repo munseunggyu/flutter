@@ -2,6 +2,7 @@ import 'package:easy_practice/riverpod_practice/default_layout.dart';
 import 'package:easy_practice/riverpod_practice/screen/riverpod_autodispose_modifier_screen.dart';
 import 'package:easy_practice/riverpod_practice/screen/riverpod_family_modifier_screen.dart';
 import 'package:easy_practice/riverpod_practice/screen/riverpod_future_screen.dart';
+import 'package:easy_practice/riverpod_practice/screen/riverpod_listen_screen.dart';
 import 'package:easy_practice/riverpod_practice/screen/riverpod_notifier_provider.dart';
 import 'package:easy_practice/riverpod_practice/screen/riverpod_state_provider_screen.dart';
 import 'package:easy_practice/riverpod_practice/screen/riverpod_stream_screen.dart';
@@ -59,6 +60,13 @@ class RiverpodHomeScreen extends StatelessWidget {
                   builder: (_) => const RiverpodAutodisposeModifierScreen()));
             },
             child: const Text('RiverpodAutodisposeModifierScreen'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (_) => const RiverpodListenScreen()));
+            },
+            child: const Text('RiverpodListenScreen'),
           ),
         ],
       ),
