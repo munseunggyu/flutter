@@ -7,6 +7,7 @@ import 'package:easy_practice/SingleChildScroll/single_child_scroll.dart';
 import 'package:easy_practice/agora_test/agora_test.dart';
 import 'package:easy_practice/future_stream/FutureStream.dart';
 import 'package:easy_practice/provider_practice/provider_practice.dart';
+import 'package:easy_practice/riverpod/provider_observer.dart';
 import 'package:easy_practice/riverpod_practice/riverpot_main.dart';
 import 'package:easy_practice/screens/home_screen.dart';
 // import 'package:easy_practice/Navigators/navigation_pracitce.dart';
@@ -19,6 +20,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 void main() {
   runApp(
     ProviderScope(
+      observers: [
+        Logger(),
+      ],
       child: MaterialApp(
         theme: ThemeData(
           fontFamily: 'sunflower',

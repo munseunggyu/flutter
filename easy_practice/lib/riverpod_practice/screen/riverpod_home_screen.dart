@@ -1,4 +1,5 @@
 import 'package:easy_practice/riverpod_practice/default_layout.dart';
+import 'package:easy_practice/riverpod_practice/screen/code_genertation_screen.dart';
 import 'package:easy_practice/riverpod_practice/screen/riverpod_autodispose_modifier_screen.dart';
 import 'package:easy_practice/riverpod_practice/screen/riverpod_family_modifier_screen.dart';
 import 'package:easy_practice/riverpod_practice/screen/riverpod_future_screen.dart';
@@ -83,6 +84,13 @@ class RiverpodHomeScreen extends StatelessWidget {
                   builder: (_) => const RiverpodProviderScreen()));
             },
             child: const Text('RiverpodSelectScreen'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (_) => const CodeGenertationScreen()));
+            },
+            child: const Text('CodeGenertationScreen'),
           ),
         ],
       ),
