@@ -1,4 +1,5 @@
 import 'package:easy_practice/riverpod_practice/default_layout.dart';
+import 'package:easy_practice/riverpod_practice/screen/riverpod_notifier_provider.dart';
 import 'package:easy_practice/riverpod_practice/screen/riverpod_state_provider_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -19,6 +20,13 @@ class RiverpodHomeScreen extends StatelessWidget {
             child: const Text(
               'State Provider Screen',
             ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (_) => const RiverpodNotifierProvider()));
+            },
+            child: const Text('RiverpodNotifierProvider'),
           ),
         ],
       ),
