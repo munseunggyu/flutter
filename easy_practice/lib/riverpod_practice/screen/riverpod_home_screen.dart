@@ -4,6 +4,7 @@ import 'package:easy_practice/riverpod_practice/screen/riverpod_family_modifier_
 import 'package:easy_practice/riverpod_practice/screen/riverpod_future_screen.dart';
 import 'package:easy_practice/riverpod_practice/screen/riverpod_listen_screen.dart';
 import 'package:easy_practice/riverpod_practice/screen/riverpod_notifier_provider.dart';
+import 'package:easy_practice/riverpod_practice/screen/riverpod_provider_screen.dart';
 import 'package:easy_practice/riverpod_practice/screen/riverpod_select_screen.dart';
 import 'package:easy_practice/riverpod_practice/screen/riverpod_state_provider_screen.dart';
 import 'package:easy_practice/riverpod_practice/screen/riverpod_stream_screen.dart';
@@ -73,6 +74,13 @@ class RiverpodHomeScreen extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (_) => const RiverpodSelectScreen()));
+            },
+            child: const Text('RiverpodSelectScreen'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (_) => const RiverpodProviderScreen()));
             },
             child: const Text('RiverpodSelectScreen'),
           ),
