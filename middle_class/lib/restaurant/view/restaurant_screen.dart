@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:middle_class/common/const/data.dart';
 import 'package:middle_class/common/dio/dio.dart';
@@ -8,14 +9,15 @@ import 'package:middle_class/restaurant/model/restaurant_model.dart';
 import 'package:middle_class/restaurant/repository/restaurant_repository.dart';
 import 'package:middle_class/restaurant/view/restaurant_detail_screen.dart';
 
-class RestaurantScreen extends StatelessWidget {
+class RestaurantScreen extends ConsumerWidget {
   const RestaurantScreen({super.key});
   final storage = const FlutterSecureStorage();
 
-  Future<List<RestaurantModel>> paginationRestaurant() async {
-    final dio = Dio();
+  Future<List<RestaurantModel>> paginationRestaurant(WidgetRef ref) async {
+    // final dio = Dio();
 
-    dio.interceptors.add(CustomInterceptor(storage: storage));
+    // dio.interceptors.add(CustomInterceptor(storage: storage));
+    final dio = ref.watch(dioProvider);
 
     final respository =
         await RestaurantRepository(dio, baseUrl: '$ip/restaurant').paginate();
@@ -24,13 +26,13 @@ class RestaurantScreen extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       child: Center(
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: FutureBuilder<List<RestaurantModel>>(
-              future: paginationRestaurant(),
+              future: paginationRestaurant(ref),
               builder:
                   (context, AsyncSnapshot<List<RestaurantModel>> snapshot) {
                 if (!snapshot.hasData) {

@@ -1,24 +1,23 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:middle_class/common/const/colors.dart';
 import 'package:middle_class/common/const/data.dart';
+import 'package:middle_class/common/dio/dio.dart';
 import 'package:middle_class/common/layout/default_layout.dart';
+import 'package:middle_class/common/secure_storage/secure_storage.dart';
 import 'package:middle_class/common/view/root_tab.dart';
 import 'package:middle_class/user/view/login_screen.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
-  final storage = const FlutterSecureStorage();
-
-  final dio = Dio();
-
+class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     // TODO: implement initState
@@ -27,6 +26,9 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void checkToken() async {
+    final storage = ref.read(secureStorage);
+    final dio = ref.read(dioProvider);
+
     String? accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
     String? refreshToken = await storage.read(key: REFRESH_TOKEN_KEY);
 
@@ -61,6 +63,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void deleteToken() async {
+    final storage = ref.watch(secureStorage);
     await storage.deleteAll();
   }
 

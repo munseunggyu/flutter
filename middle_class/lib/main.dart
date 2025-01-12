@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:middle_class/common/component/custom_text_form_field.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:middle_class/common/view/splash_screen.dart';
-import 'package:middle_class/user/view/login_screen.dart';
 
 void main() {
   runApp(const _App());
@@ -12,11 +11,13 @@ class _App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          fontFamily: 'NotoSans',
-        ),
-        home: const SplashScreen());
+    return ProviderScope(
+      child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            fontFamily: 'NotoSans',
+          ),
+          home: const SplashScreen()),
+    );
   }
 }
