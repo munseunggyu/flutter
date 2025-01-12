@@ -8,49 +8,57 @@ import 'package:middle_class/common/layout/default_layout.dart';
 import 'package:middle_class/product/component/product_card.dart';
 import 'package:middle_class/restaurant/component/restaurant_card.dart';
 import 'package:middle_class/restaurant/model/restaurant_detail_model.dart';
+import 'package:middle_class/restaurant/model/restaurant_model.dart';
+import 'package:middle_class/restaurant/provider/restaurant_provider.dart';
 import 'package:middle_class/restaurant/repository/restaurant_repository.dart';
 
-class RestaurantDetailScreen extends ConsumerWidget {
+class RestaurantDetailScreen extends ConsumerStatefulWidget {
   final String id;
   const RestaurantDetailScreen({super.key, required this.id});
+
+  @override
+  ConsumerState<RestaurantDetailScreen> createState() =>
+      _RestaurantDetailScreenState();
+}
+
+class _RestaurantDetailScreenState
+    extends ConsumerState<RestaurantDetailScreen> {
   final storage = const FlutterSecureStorage();
+
+  @override
+  void initState() {
+    super.initState();
+
+    ref.read(restaurantProvider.notifier).getDetail(id: widget.id);
+  }
 
   Future<RestaurantDetailModel> getRestaruantDetail(WidgetRef ref) async {
     final respository = ref.watch(restaurantRepositoryProvider);
 
-    return respository.getRestaurantDetail(id: id);
+    return respository.getRestaurantDetail(id: widget.id);
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    final item = ref.watch(restaurantDetailProvider(widget.id));
+
+    if (item == null) {
+      return const DefaultLayout(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
     return DefaultLayout(
-      title: '불',
-      child: FutureBuilder<RestaurantDetailModel>(
-          future: getRestaruantDetail(ref),
-          builder: (_, AsyncSnapshot<RestaurantDetailModel> snapshot) {
-            if (snapshot.hasError) {
-              return const Center(
-                child: Text('Error'),
-              );
-            }
-
-            if (!snapshot.hasData) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            // final item = RestaurantDetailModel.fromJson(snapshot.data!);
-            final item = snapshot.data!;
-
-            return CustomScrollView(
-              slivers: [
-                renderTop(model: item),
-                renderLabel(),
-                renderProducts(model: item.products),
-              ],
-            );
-          }),
-    );
+        title: '불',
+        child: CustomScrollView(
+          slivers: [
+            renderTop(model: item),
+            if (item is RestaurantDetailModel) renderLabel(),
+            if (item is RestaurantDetailModel)
+              renderProducts(model: item.products),
+          ],
+        ));
   }
 
   SliverPadding renderLabel() {
@@ -93,7 +101,7 @@ class RestaurantDetailScreen extends ConsumerWidget {
   }
 
   SliverToBoxAdapter renderTop({
-    required RestaurantDetailModel model,
+    required RestaurantModel model,
   }) {
     return SliverToBoxAdapter(
         child: RestaurantCard.fromModel(
