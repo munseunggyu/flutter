@@ -16,8 +16,7 @@ class RestaurantDetailScreen extends ConsumerWidget {
   final storage = const FlutterSecureStorage();
 
   Future<RestaurantDetailModel> getRestaruantDetail(WidgetRef ref) async {
-    final dio = ref.watch(dioProvider);
-    final respository = RestaurantRepository(dio, baseUrl: '$ip/restaurant');
+    final respository = ref.watch(restaurantRepositoryProvider);
 
     return respository.getRestaurantDetail(id: id);
   }
