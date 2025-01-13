@@ -6,6 +6,7 @@ import 'package:middle_class/common/const/data.dart';
 import 'package:middle_class/common/dio/dio.dart';
 import 'package:middle_class/common/layout/default_layout.dart';
 import 'package:middle_class/product/component/product_card.dart';
+import 'package:middle_class/rating/component/rating_card.dart';
 import 'package:middle_class/restaurant/component/restaurant_card.dart';
 import 'package:middle_class/restaurant/model/restaurant_detail_model.dart';
 import 'package:middle_class/restaurant/model/restaurant_model.dart';
@@ -57,6 +58,20 @@ class _RestaurantDetailScreenState
             if (item is RestaurantDetailModel) renderLabel(),
             if (item is RestaurantDetailModel)
               renderProducts(model: item.products),
+            const SliverPadding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              sliver: SliverToBoxAdapter(
+                child: RatingCard(
+                  email: 'wow',
+                  images: [],
+                  avatarImage: AssetImage(
+                    'asset/img/logo/codefactory_logo.png',
+                  ),
+                  rating: 2,
+                  content: 'dnakdl',
+                ),
+              ),
+            )
           ],
         ));
   }
