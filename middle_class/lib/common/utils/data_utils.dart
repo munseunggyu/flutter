@@ -6,7 +6,11 @@ class DataUtils {
     return RestaurantPriceRange.values.firstWhere((e) => e.name == value);
   }
 
-  static pathToUrl(String value) {
+  static String pathToUrl(String value) {
     return '$ip$value';
+  }
+
+  static List<String> listPathsToUrls(List<String> paths) {
+    return paths.map((e) => pathToUrl(e)).toList();
   }
 }
