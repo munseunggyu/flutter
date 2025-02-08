@@ -1,16 +1,16 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:middle_class/common/const/data.dart';
-import 'package:middle_class/common/dio/dio.dart';
 import 'package:middle_class/common/layout/default_layout.dart';
 import 'package:middle_class/product/component/product_card.dart';
 import 'package:middle_class/rating/component/rating_card.dart';
 import 'package:middle_class/restaurant/component/restaurant_card.dart';
 import 'package:middle_class/restaurant/model/restaurant_detail_model.dart';
 import 'package:middle_class/restaurant/model/restaurant_model.dart';
+import 'package:middle_class/restaurant/model/thumb_model.dart';
 import 'package:middle_class/restaurant/provider/restaurant_provider.dart';
+import 'package:middle_class/restaurant/provider/thumb_provider.dart';
 import 'package:middle_class/restaurant/repository/restaurant_repository.dart';
 
 class RestaurantDetailScreen extends ConsumerStatefulWidget {
@@ -25,6 +25,7 @@ class RestaurantDetailScreen extends ConsumerStatefulWidget {
 class _RestaurantDetailScreenState
     extends ConsumerState<RestaurantDetailScreen> {
   final storage = const FlutterSecureStorage();
+  late ThumbModel? thumb;
 
   @override
   void initState() {
@@ -43,6 +44,8 @@ class _RestaurantDetailScreenState
   Widget build(BuildContext context) {
     final item = ref.watch(restaurantDetailProvider(widget.id));
 
+    final thumbState = ref.watch(thumbListPrivider);
+
     if (item == null) {
       return const DefaultLayout(
         child: Center(
@@ -50,11 +53,42 @@ class _RestaurantDetailScreenState
         ),
       );
     }
+
+    thumb = thumbState.where(
+      (element) {
+        return element.id == item.id;
+      },
+    ).firstOrNull;
     return DefaultLayout(
         title: '불',
         child: CustomScrollView(
           slivers: [
             renderTop(model: item),
+            if (thumb != null)
+              SliverPadding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                sliver: SliverToBoxAdapter(
+                  child: GestureDetector(
+                    onDoubleTap: () {
+                      if (thumb != null) {
+                        ref
+                            .read(thumbListPrivider.notifier)
+                            .handleUpThumb(item.id);
+                      }
+                    },
+                    child: Row(
+                      children: [
+                        const Icon(Icons.thumb_up),
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        Text(thumb!.count.toString()),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             if (item is RestaurantDetailModel) renderLabel(),
             if (item is RestaurantDetailModel)
               renderProducts(model: item.products),
