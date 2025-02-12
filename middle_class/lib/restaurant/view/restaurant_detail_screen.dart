@@ -30,7 +30,7 @@ class _RestaurantDetailScreenState
   @override
   void initState() {
     super.initState();
-
+    print(widget.id);
     ref.read(restaurantProvider.notifier).getDetail(id: widget.id);
   }
 
@@ -46,6 +46,8 @@ class _RestaurantDetailScreenState
 
     final thumbState = ref.watch(thumbListPrivider);
 
+    final gthumbState = ref.watch(gThumbStateNotifierProvider);
+
     if (item == null) {
       return const DefaultLayout(
         child: Center(
@@ -54,7 +56,7 @@ class _RestaurantDetailScreenState
       );
     }
 
-    thumb = thumbState.where(
+    thumb = gthumbState.where(
       (element) {
         return element.id == item.id;
       },
@@ -73,7 +75,7 @@ class _RestaurantDetailScreenState
                     onDoubleTap: () {
                       if (thumb != null) {
                         ref
-                            .read(thumbListPrivider.notifier)
+                            .read(gThumbStateNotifierProvider.notifier)
                             .handleUpThumb(item.id);
                       }
                     },
